@@ -1,7 +1,6 @@
 import { components } from "@/lib/clients/jawnTypes/public";
 import { useClickhouseSchemas } from "@/services/hooks/heliconeSql";
-import { useMonaco, Editor } from "@monaco-editor/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import TopBar from "./topBar";
 import { Directory } from "./directory";
 import QueryResult from "./QueryResult";
@@ -10,8 +9,6 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { editor } from "monaco-editor";
-import * as monaco from "monaco-editor";
 import { $JAWN_API } from "@/lib/clients/jawn";
 import { useMutation } from "@tanstack/react-query";
 import { useFeatureFlag } from "@/services/hooks/admin";
@@ -26,6 +23,37 @@ import {
   createExecuteQueryMutation,
 } from "./constants";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import dynamic from "next/dynamic";
+
+// Lazy load Monaco Editor components to reduce initial bundle size
+const MonacoEditor = dynamic(
+  () => import("@monaco-editor/react").then((mod) => ({ 
+    default: mod.Editor,
+    useMonaco: mod.useMonaco 
+  })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded border">
+        <div className="flex flex-col items-center space-y-2">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <div className="text-sm text-gray-500">Loading SQL editor...</div>
+        </div>
+      </div>
+    ),
+  }
+);
+
+// Lazy load Monaco modules
+const monacoModules = dynamic(
+  () => import("monaco-editor").then((mod) => ({
+    default: {
+      editor: mod.editor,
+      monaco: mod,
+    },
+  })),
+  { ssr: false }
+);
 
 function HQLPage() {
   const organization = useOrg();
@@ -35,10 +63,10 @@ function HQLPage() {
   );
   const { setNotification } = useNotification();
 
-  const monaco = useMonaco();
   const clickhouseSchemas = useClickhouseSchemas();
-  const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+  const editorRef = useRef<any | null>(null);
   const [activeTab, setActiveTab] = useState<"tables" | "queries">("tables");
+  const [monacoInstance, setMonacoInstance] = useState<any>(null);
 
   const [result, setResult] = useState<
     components["schemas"]["ExecuteSqlResponse"]
@@ -95,15 +123,15 @@ function HQLPage() {
     }
   }, [savedQueryDetails]);
 
-  // Setup autocompletion
+  // Setup autocompletion - only run when Monaco is loaded
   useEffect(() => {
-    if (!monaco || !clickhouseSchemas.data) return;
+    if (!monacoInstance || !clickhouseSchemas.data) return;
 
     const tableSchema = clickhouseSchemas.data;
     const schemaTableNames = getTableNames(tableSchema);
     const schemaTableNamesSet = getTableNamesSet(tableSchema);
 
-    const disposable = monaco.languages.registerCompletionItemProvider("*", {
+    const disposable = monacoInstance.languages.registerCompletionItemProvider("*", {
       provideCompletionItems: (model, position) => {
         let suggestions: monaco.languages.CompletionItem[] = [];
 
@@ -201,7 +229,7 @@ function HQLPage() {
     });
 
     return () => disposable.dispose();
-  }, [monaco, clickhouseSchemas.data]);
+  }, [monacoInstance, clickhouseSchemas.data]);
 
   useEffect(() => {
     latestQueryRef.current = currentQuery;
@@ -256,11 +284,12 @@ function HQLPage() {
                 });
               }}
             />
-            <Editor
+            <MonacoEditor
               defaultLanguage="sql"
               defaultValue={currentQuery.sql}
               onMount={async (editor, monaco) => {
                 editorRef.current = editor;
+                setMonacoInstance(monaco);
                 const model = editor.getModel();
                 if (!model) return;
 
@@ -342,7 +371,7 @@ function HQLPage() {
                   sql: value ?? "",
                 });
                 if (value) {
-                  if (!monaco || !editorRef.current) return;
+                  if (!monacoInstance || !editorRef.current) return;
 
                   const model = editorRef.current.getModel();
                   if (!model) return;
@@ -352,7 +381,7 @@ function HQLPage() {
                     /\b(insert|update|delete|drop|alter|create|truncate|replace)\b/i;
 
                   if (forbidden.test(value)) {
-                    monaco.editor.setModelMarkers(
+                    monacoInstance.editor.setModelMarkers(
                       model,
                       "custom-sql-validation",
                       [
@@ -369,7 +398,7 @@ function HQLPage() {
                     );
                   } else {
                     // Clear custom markers if no forbidden statements
-                    monaco.editor.setModelMarkers(
+                    monacoInstance.editor.setModelMarkers(
                       model,
                       "custom-sql-validation",
                       [],

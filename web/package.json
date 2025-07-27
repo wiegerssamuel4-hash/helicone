@@ -17,6 +17,8 @@
     "lint-fix": "next lint --fix",
     "postbuild": "next-sitemap",
     "analyze": "cross-env ANALYZE=true next build",
+    "analyze-performance": "node scripts/analyze-performance.js",
+    "perf": "npm run analyze-performance",
     "test": "jest"
   },
   "dependencies": {

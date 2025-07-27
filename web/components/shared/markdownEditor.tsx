@@ -7,13 +7,31 @@ import "prismjs/components/prism-yaml";
 import "prismjs/components/prism-markup-templating";
 import "prismjs/themes/prism.css";
 import Editor from "react-simple-code-editor";
-import { Editor as MonacoEditor } from "@monaco-editor/react";
-import { editor } from "monaco-editor";
 import { useTheme } from "next-themes";
-import { useMemo, useState } from "react";
+import { useMemo, useState, Suspense } from "react";
 import { TEMPLATE_REGEX } from "@helicone-package/prompts/templates";
 import { useVariableColorMapStore } from "@/store/features/playground/variableColorMap";
 import { HeliconeTemplateManager } from "@helicone-package/prompts/templates";
+import dynamic from "next/dynamic";
+
+// Lazy load Monaco Editor to reduce initial bundle size
+const MonacoEditor = dynamic(
+  () => import("@monaco-editor/react").then((mod) => ({ default: mod.Editor })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-32 bg-gray-50 dark:bg-gray-800 rounded border">
+        <div className="text-sm text-gray-500">Loading editor...</div>
+      </div>
+    ),
+  }
+);
+
+// Lazy load editor types to avoid importing heavy Monaco types upfront
+const monacoEditorType = dynamic(
+  () => import("monaco-editor").then((mod) => mod.editor),
+  { ssr: false }
+);
 
 const MAX_EDITOR_HEIGHT = 1000000;
 const MonacoMarkdownEditor = (props: MarkdownEditorProps) => {
@@ -32,7 +50,7 @@ const MonacoMarkdownEditor = (props: MarkdownEditorProps) => {
   const minHeight = 100;
 
   const [height, setHeight] = useState(minHeight);
-  const updateHeight = (editor: editor.IStandaloneCodeEditor) =>
+  const updateHeight = (editor: any) =>
     setHeight(
       Math.min(
         MAX_EDITOR_HEIGHT,
@@ -42,29 +60,36 @@ const MonacoMarkdownEditor = (props: MarkdownEditorProps) => {
 
   return (
     <div className={containerClassName}>
-      <MonacoEditor
-        value={typeof text === "string" ? text : JSON.stringify(text)}
-        onChange={(value) => setText(value || "")}
-        language={language}
-        theme={currentTheme === "dark" ? "vs-dark" : "vs-light"}
-        onMount={(editor) =>
-          editor.onDidContentSizeChange(() => updateHeight(editor))
-        }
-        options={{
-          minimap: { enabled: false },
-          fontSize: 12,
-          fontFamily: '"Fira Code", "Fira Mono", monospace',
-          readOnly: disabled,
-          wordWrap: "on",
-          lineNumbers: "off",
-          language: "markdown",
-          scrollBeyondLastLine: false, // Prevents extra space at bottom
-          automaticLayout: true, // Enables auto-resizing
-          ...(monacoOptions ?? {}),
-        }}
-        className={className}
-        height={height}
-      />
+      <Suspense fallback={
+        <div className="flex items-center justify-center h-32 bg-gray-50 dark:bg-gray-800 rounded border">
+          <div className="text-sm text-gray-500">Loading editor...</div>
+        </div>
+      }>
+        <MonacoEditor
+          value={typeof text === "string" ? text : JSON.stringify(text)}
+          onChange={(value) => setText(value || "")}
+          language={language}
+          theme={currentTheme === "dark" ? "vs-dark" : "vs-light"}
+          onMount={(editor) =>
+            editor.onDidContentSizeChange(() => updateHeight(editor))
+          }
+          height={height}
+          options={{
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            wordWrap: "on",
+            automaticLayout: true,
+            fontSize: 12,
+            lineNumbers: "off",
+            folding: false,
+            lineDecorationsWidth: 0,
+            lineNumbersMinChars: 0,
+            glyphMargin: false,
+            readOnly: disabled,
+            ...monacoOptions,
+          }}
+        />
+      </Suspense>
       {showLargeTextWarning && (
         <i className="text-xs text-gray-500">
           Helicone: Large text detected, falling back to large text editor
@@ -85,7 +110,7 @@ interface MarkdownEditorProps {
   id?: string;
   placeholder?: string;
   containerClassName?: string;
-  monacoOptions?: editor.IStandaloneEditorConstructionOptions;
+  monacoOptions?: monacoEditorType.IStandaloneEditorConstructionOptions;
   showLargeTextWarning?: boolean;
 }
 
