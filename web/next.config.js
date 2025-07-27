@@ -15,20 +15,70 @@ const nextConfig = {
         hostname: "*",
       },
     ],
+    formats: ["image/webp", "image/avif"],
+    minimumCacheTTL: 60,
   },
   reactStrictMode: false,
   swcMinify: true,
+  compress: true,
+  poweredByHeader: false,
   transpilePackages: [
     "@helicone-package/cost",
     "@helicone-package/llm-mapper",
   ],
-  webpack: (config) => {
+  webpack: (config, { dev, isServer }) => {
+    // GraphQL loader
     config.module.rules.push({
       test: /\.(graphql|gql)$/,
       exclude: /node_modules/,
       loader: "graphql-tag/loader",
     });
-    config.resolve.extensions.push(".graphql"); // Add this line
+    config.resolve.extensions.push(".graphql");
+
+    // Optimize bundle size in production
+    if (!dev && !isServer) {
+      // Split chunks for better caching
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          // Monaco Editor chunk
+          monaco: {
+            test: /[\\/]node_modules[\\/](@monaco-editor|monaco-editor)[\\/]/,
+            name: "monaco",
+            chunks: "all",
+            priority: 30,
+          },
+          // Chart libraries chunk
+          charts: {
+            test: /[\\/]node_modules[\\/](@tremor\/react|recharts)[\\/]/,
+            name: "charts",
+            chunks: "all",
+            priority: 25,
+          },
+          // UI libraries chunk
+          ui: {
+            test: /[\\/]node_modules[\\/](@radix-ui|framer-motion)[\\/]/,
+            name: "ui",
+            chunks: "all",
+            priority: 20,
+          },
+          // Vendor chunk for other large libraries
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: "vendor",
+            chunks: "all",
+            priority: 10,
+            minSize: 100000,
+          },
+        },
+      };
+
+      // Tree shake unused exports
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
+    }
+
     return config;
   },
   async redirects() {
