@@ -1,4 +1,9 @@
-import { BarChart, Bar, XAxis, CartesianGrid } from "recharts";
+import { LazyRechartsBarChart as BarChart } from "@/components/shared/charts";
+import dynamic from "next/dynamic";
+const Bar = dynamic(() => import("recharts").then(mod => ({ default: mod.Bar })), { ssr: false });
+const XAxis = dynamic(() => import("recharts").then(mod => ({ default: mod.XAxis })), { ssr: false });
+const CartesianGrid = dynamic(() => import("recharts").then(mod => ({ default: mod.CartesianGrid })), { ssr: false });
+
 import {
   ChartContainer,
   ChartTooltip,

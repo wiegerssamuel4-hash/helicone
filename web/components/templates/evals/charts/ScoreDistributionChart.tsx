@@ -1,4 +1,5 @@
-import { BarChart } from "@tremor/react";
+import { LazyBarChart as BarChart } from "@/components/shared/charts";
+
 
 interface ScoreDistributionChartProps {
   distribution: { lower: number; upper: number; value: number }[];

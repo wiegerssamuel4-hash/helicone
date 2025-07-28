@@ -4,7 +4,8 @@ import { useEffect } from "react";
 import { getTimeInterval } from "../../../../lib/timeCalculations/time";
 import { filterListToTree } from "@helicone-package/filters/helpers";
 import StyledAreaChart from "../../dashboard/styledAreaChart";
-import { AreaChart } from "@tremor/react";
+import { LazyAreaChart as AreaChart } from "@/components/shared/charts";
+
 
 interface RenderOrgPlanProps {
   currentMonth: Date;

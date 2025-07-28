@@ -3,7 +3,8 @@ import {
   usePrompt,
   usePromptRequestsOverTime,
 } from "../../../services/hooks/prompts/prompts";
-import { AreaChart } from "@tremor/react";
+import { LazyAreaChart as AreaChart } from "@/components/shared/charts";
+
 import {
   getTimeInterval,
   getTimeIntervalAgo,

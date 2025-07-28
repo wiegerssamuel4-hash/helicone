@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { BarChart } from "@tremor/react";
+import { LazyBarChart as BarChart } from "@/components/shared/charts";
+
 import { getJawnClient } from "../../../lib/clients/jawn";
 import { Card, Grid } from "../../layout/common";
 import { clsx } from "../../shared/clsx";

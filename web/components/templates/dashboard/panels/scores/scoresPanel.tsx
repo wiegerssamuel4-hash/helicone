@@ -1,5 +1,6 @@
 import LoadingAnimation from "@/components/shared/loadingAnimation";
-import { Card, LineChart } from "@tremor/react";
+import { LazyLineChart as LineChart } from "@/components/shared/charts";
+import { Card } from "@tremor/react";
 import clsx from "clsx";
 import { useScores } from "./useScores";
 import { ScoresPanelProps } from "./ScoresPanelProps";

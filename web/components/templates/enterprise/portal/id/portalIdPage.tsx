@@ -6,7 +6,8 @@ import { OrgLimits } from "../../../organization/createOrgForm";
 import { getUSDateFromString } from "../../../../shared/utils/utils";
 import { clsx } from "../../../../shared/clsx";
 import OrgMembersPage from "../../../organization/members/orgMembersPage";
-import { AreaChart } from "@tremor/react";
+import { LazyAreaChart as AreaChart } from "@/components/shared/charts";
+
 import { useState } from "react";
 import LoadingAnimation from "../../../../shared/loadingAnimation";
 import ProviderKeyList from "./providerKeyList";

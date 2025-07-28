@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { AreaChart, BarChart, DonutChart, Legend } from "@tremor/react";
+import { LazyAreaChart as AreaChart, LazyBarChart as BarChart, LazyDonutChart as DonutChart } from "@/components/shared/charts";
+import { Legend } from "@tremor/react";
 import { useEffect } from "react";
 import ThemedDropdown from "../../../components/shared/themed/themedDropdown";
 import { ThemedScatterPlot } from "../../../components/shared/themed/themedScatterPlot";

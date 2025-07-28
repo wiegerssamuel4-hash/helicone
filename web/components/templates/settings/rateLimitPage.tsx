@@ -8,7 +8,8 @@ import {
   startOfMonth,
   subMonths,
 } from "date-fns";
-import { BarChart } from "@tremor/react";
+import { LazyBarChart as BarChart } from "@/components/shared/charts";
+
 import { getTimeMap } from "../../../lib/timeCalculations/constants";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import useNotification from "../../shared/notification/useNotification";

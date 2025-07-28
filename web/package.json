@@ -18,6 +18,7 @@
     "postbuild": "next-sitemap",
     "analyze": "cross-env ANALYZE=true next build",
     "analyze-performance": "node scripts/analyze-performance.js",
+    "migrate-charts": "node scripts/migrate-chart-imports.js",
     "perf": "npm run analyze-performance",
     "test": "jest"
   },

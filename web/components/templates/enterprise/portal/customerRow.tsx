@@ -1,6 +1,7 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { AreaChart } from "@tremor/react";
+import { LazyAreaChart as AreaChart } from "@/components/shared/charts";
+
 import { getUSDateFromString } from "../../../shared/utils/utils";
 import { Fragment, useState } from "react";
 import { clsx } from "../../../shared/clsx";

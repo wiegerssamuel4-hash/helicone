@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/select";
 import { formatSeconds } from "@/lib/sql/timeHelpers";
 import { useLocalStorage } from "@/services/hooks/localStorage";
-import { BarChart, Card } from "@tremor/react";
+import { LazyBarChart as BarChart } from "@/components/shared/charts";
+import { Card } from "@tremor/react";
 import { useState } from "react";
 import {
   useSessionMetrics,

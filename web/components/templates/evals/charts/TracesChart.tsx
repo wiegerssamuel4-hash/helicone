@@ -1,4 +1,5 @@
-import { AreaChart } from "@tremor/react";
+import { LazyAreaChart as AreaChart } from "@/components/shared/charts";
+
 
 interface TracesChartProps {
   overTime: { date: string; count: number }[];

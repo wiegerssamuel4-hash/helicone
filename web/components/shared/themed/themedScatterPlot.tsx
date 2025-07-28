@@ -1,4 +1,5 @@
-import { MultiSelect, MultiSelectItem, ScatterChart } from "@tremor/react";
+import { LazyScatterChart as ScatterChart } from "@/components/shared/charts";
+import { MultiSelect, MultiSelectItem } from "@tremor/react";
 import { useEffect, useState } from "react";
 
 export const ThemedScatterPlot = ({

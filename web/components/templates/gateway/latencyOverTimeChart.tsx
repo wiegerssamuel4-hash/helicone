@@ -1,7 +1,12 @@
 "use client";
 
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { LazyRechartsAreaChart as AreaChart } from "@/components/shared/charts";
+import dynamic from "next/dynamic";
+const Area = dynamic(() => import("recharts").then(mod => ({ default: mod.Area })), { ssr: false });
+const CartesianGrid = dynamic(() => import("recharts").then(mod => ({ default: mod.CartesianGrid })), { ssr: false });
+const XAxis = dynamic(() => import("recharts").then(mod => ({ default: mod.XAxis })), { ssr: false });
+
 import { useState } from "react";
 
 import {

@@ -9,7 +9,12 @@ import { cn } from "@/lib/utils";
 import { useExperimentScores } from "@/services/hooks/prompts/experiment-scores";
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { LazyRechartsLineChart as LineChart } from "@/components/shared/charts";
+import dynamic from "next/dynamic";
+const CartesianGrid = dynamic(() => import("recharts").then(mod => ({ default: mod.CartesianGrid })), { ssr: false });
+const Line = dynamic(() => import("recharts").then(mod => ({ default: mod.Line })), { ssr: false });
+const XAxis = dynamic(() => import("recharts").then(mod => ({ default: mod.XAxis })), { ssr: false });
+
 import { useExperimentTable } from "../hooks/useExperimentTable";
 import { PromptVersion } from "./PromptVersion";
 

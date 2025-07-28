@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuantiles } from "../../../services/hooks/quantiles";
-import { Card, LineChart } from "@tremor/react";
+import { LazyLineChart as LineChart } from "@/components/shared/charts";
+import { Card } from "@tremor/react";
 import {
   Select,
   SelectContent,

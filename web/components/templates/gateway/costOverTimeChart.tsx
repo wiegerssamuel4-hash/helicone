@@ -1,7 +1,12 @@
 "use client";
 
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { LazyRechartsBarChart as BarChart } from "@/components/shared/charts";
+import dynamic from "next/dynamic";
+const Bar = dynamic(() => import("recharts").then(mod => ({ default: mod.Bar })), { ssr: false });
+const CartesianGrid = dynamic(() => import("recharts").then(mod => ({ default: mod.CartesianGrid })), { ssr: false });
+const XAxis = dynamic(() => import("recharts").then(mod => ({ default: mod.XAxis })), { ssr: false });
+
 import { useState } from "react";
 
 import {

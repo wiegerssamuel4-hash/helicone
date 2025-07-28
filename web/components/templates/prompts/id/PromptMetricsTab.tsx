@@ -1,5 +1,6 @@
 import { TimeFilter } from "@/types/timeFilter";
-import { AreaChart, MultiSelect, MultiSelectItem } from "@tremor/react";
+import { LazyAreaChart as AreaChart } from "@/components/shared/charts";
+import { MultiSelect, MultiSelectItem } from "@tremor/react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useState } from "react";

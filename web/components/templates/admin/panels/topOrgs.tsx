@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { BarChart, TextInput } from "@tremor/react";
+import { LazyBarChart as BarChart } from "@/components/shared/charts";
+import { TextInput } from "@tremor/react";
 import dateFormat from "dateformat";
 import { useEffect, useState } from "react";
 import { getJawnClient } from "../../../../lib/clients/jawn";

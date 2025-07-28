@@ -8,7 +8,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLocalStorage } from "@/services/hooks/localStorage";
-import { BarChart, Card, Title } from "@tremor/react";
+import { LazyBarChart as BarChart } from "@/components/shared/charts";
+import { Card, Title } from "@tremor/react";
 import { useState } from "react";
 
 import { Row } from "../../layout/common";

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { getJawnClient } from "@/lib/clients/jawn";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { BarChart } from "@tremor/react";
+import { LazyBarChart as BarChart } from "@/components/shared/charts";
+
 import { formatLargeNumber } from "@/components/shared/utils/numberFormat";
 import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { SearchIcon } from "lucide-react";

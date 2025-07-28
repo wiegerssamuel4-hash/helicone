@@ -1,5 +1,6 @@
 import { formatNumber } from "@/components/shared/utils/formatNumber";
-import { DonutChart } from "@tremor/react";
+import { LazyDonutChart as DonutChart } from "@/components/shared/charts";
+
 
 interface ScoreDistributionChartProps {
   distribution: { lower: number; upper: number; value: number }[];

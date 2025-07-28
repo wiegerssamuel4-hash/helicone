@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { BarChart, Select, SelectItem } from "@tremor/react";
+import { LazyBarChart as BarChart } from "@/components/shared/charts";
+import { Select, SelectItem } from "@tremor/react";
 import { getJawnClient } from "../../../lib/clients/jawn";
 import { useLocalStorage } from "../../../services/hooks/localStorage";
 import { useOrg } from "../../layout/org/organizationContext";

@@ -14,7 +14,8 @@ import {
   CircleStackIcon,
   ClockIcon,
 } from "@heroicons/react/24/outline";
-import { BarChart } from "@tremor/react";
+import { LazyBarChart as BarChart } from "@/components/shared/charts";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
