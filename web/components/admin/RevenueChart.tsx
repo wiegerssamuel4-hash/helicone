@@ -1,7 +1,6 @@
 // RevenueChart.tsx
 "use client";
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import {
   Card,
@@ -17,9 +16,28 @@ import {
   ChartLegendContent,
   ChartTooltip,
 } from "@/components/ui/chart";
-import { formatCurrency } from "@/lib/uiUtils";
 import { InvoiceData } from "@/lib/admin/RevenueCalculator";
 import { H3, Small, Muted } from "@/components/ui/typography";
+import { LazyRechartsBarChart as BarChart } from "@/components/shared/charts/LazyChart";
+import dynamic from "next/dynamic";
+
+// Lazy load Recharts components
+const CartesianGrid = dynamic(
+  () => import("recharts").then((mod) => ({ default: mod.CartesianGrid })),
+  { ssr: false }
+);
+const XAxis = dynamic(
+  () => import("recharts").then((mod) => ({ default: mod.XAxis })),
+  { ssr: false }
+);
+const YAxis = dynamic(
+  () => import("recharts").then((mod) => ({ default: mod.YAxis })),
+  { ssr: false }
+);
+const Bar = dynamic(
+  () => import("recharts").then((mod) => ({ default: mod.Bar })),
+  { ssr: false }
+);
 
 interface RevenueChartProps {
   billedInvoices: InvoiceData[];
